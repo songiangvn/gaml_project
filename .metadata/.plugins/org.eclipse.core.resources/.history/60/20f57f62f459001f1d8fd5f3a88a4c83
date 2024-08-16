@@ -1,0 +1,23 @@
+/**
+* Name: Evacuation
+* Based on the internal empty template. 
+* Author: SON GIANG
+* Tags: 
+*/
+
+
+model Evacuation
+
+/* Insert your model definition here */
+
+global {
+	
+}
+
+species hazard{
+	
+}
+
+experiment Evacuation type: gui{
+	
+}

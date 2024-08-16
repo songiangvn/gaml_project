@@ -1,0 +1,45 @@
+/**
+* Name: mymodel
+* Based on the internal empty template. 
+* Author: SON GIANG
+* Tags: 
+*/
+
+
+model mymodel
+
+/* Insert your model definition here */
+
+global {
+	// tạo ra một quần thể people với các attribute chung như được định nghĩa ở dưới đây.
+	float rate_similar_wanted <- 0.4;
+	float neighbours_distance <- 5.0;
+	init {
+		create people number: 2000;
+	}
+}
+
+species people{
+	rgb color <- (flip(0.5) ? #red : #yellow);
+	aspect asp_circle{
+		draw circle(1.0) color: color border: #black;
+	}
+	
+	reflex move {
+		location <- any_location_in(world.shape);
+	}
+	
+	reflex computing_similarity{
+		float rate_similar <- 0.0;
+		
+	}
+}
+
+/* this is for input and output ?*/
+experiment Schelling1 type: gui{
+	output{
+		display people_display {
+			species people aspect: asp_circle;
+		}
+	}
+}

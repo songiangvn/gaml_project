@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>Unclassified Models</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.xtext.ui.shared.xtextBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.xtext.ui.shared.xtextNature</nature>
+		<nature>msi.gama.application.gamaNature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>models/evacuation_environment.shp</name>
+			<type>1</type>
+			<location>C:/Users/SON GIANG/AppData/Local/Temp/9b9be6d6-94aa-41b4-87c2-cfbf89a8f948_Evacuation.zip.948/Evacuation/includes/evacuation_environment.shp</location>
+		</link>
+	</linkedResources>
+</projectDescription>

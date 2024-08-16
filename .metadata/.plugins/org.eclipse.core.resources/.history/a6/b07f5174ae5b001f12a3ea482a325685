@@ -1,0 +1,106 @@
+/**
+* Name: Evacuation
+* Based on the internal empty template. 
+* Author: SON GIANG
+* Tags: 
+*/
+
+
+model Evacuation
+
+/* Insert your model definition here */
+
+// Model có thể bao gồm nhiều điểm safety, evacuation point khác nhau 
+global {
+	int casualties <- 0; // thương vong / số người chết
+	int nb_of_people <- 1000;
+	
+	// phạm vi nhận thức của mỗi người là khác nhau --> định nghĩa các cái attribute của global sẽ giống như định nghĩa 1 const 
+	float min_perception_distance <- 50.0;
+	float max_perception_distance <- 500.0;
+	
+	geometry shape <- square(500#m);
+	float step <- 10#sec;
+	
+	file water_body <- file("Hazard Evacuation\includes\sea_environment.shp");
+	
+	init {
+//		create hazard;
+//		create evacuation_point {
+//			location <- {0, 0};
+//		}
+		create hazard from: water_body;
+		create evacuation_point from: evac_points;
+		
+		create inhabitant number: nb_of_people{
+			safety_point <- any(evacuation_point);
+		}
+	}
+	
+	reflex stop_simu when: empty(inhabitant){
+		do pause;
+	}
+}
+
+// define the catastrophe --> đinh nghĩa cái thảm họa
+// thảm họa cũng tác động và làm biến mất con người 
+species hazard{
+	
+	float speed <- 0.2#km/#h;
+	geometry shape <- circle(20#m);
+	
+	reflex expand{
+		shape <- shape + (speed * step);
+		ask inhabitant overlapping self{
+			casualties <- casualties + 1;
+			do die;
+		}
+	}
+}
+
+// định nghĩa species evacuation_point --> định nghĩa điểm mà con người sẽ di tản tới khi phát hiện ra hazard(nguy cơ)
+species evacuation_point{
+	int count_exit <- 0;
+	action evacuate_inhabitant {
+		count_exit <- count_exit + 1;
+	}
+	aspect default {
+		//draw circle(10#m) color: #green;
+		// update evacuation point mỗi khi có people đến được evacaution point
+		draw circle(1#m+19#m*count_exit/nb_of_people) color:#green;
+	}
+}
+
+// định nghĩa species inhabitant --> định nghía species người dân(species nghĩa là loài)
+species inhabitant skills:[moving]{
+	evacuation_point safety_point;
+	float perception_dist <- rnd(min_perception_distance, max_perception_distance);
+	bool alerted <- false;
+	// chỉ update alerted 1 lần khi mà nó chưa được update thôi
+	reflex perceive_hazard when: not alerted{
+		alerted <- not empty(hazard at_distance(perception_dist));
+	}
+	reflex evacuate when: alerted {
+		do goto target: safety_point;
+		// cái goto target này là from moving skill
+		
+		if (location distance_to safety_point.location < 2#m){
+			ask safety_point {do evacuate_inhabitant();}
+			do die;
+		}
+	}
+	aspect default{
+		draw circle(1#m) color: #blue;
+	}
+}
+
+// cái này để display ra 
+experiment my_experiment type: gui{
+	output {
+		display my_display type: 3d{
+			species hazard;
+			species evacuation_point;
+			species inhabitant;
+		}
+	}
+}

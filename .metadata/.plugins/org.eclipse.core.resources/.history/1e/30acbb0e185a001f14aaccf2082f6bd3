@@ -1,0 +1,76 @@
+/**
+* Name: Evacuation
+* Based on the internal empty template. 
+* Author: SON GIANG
+* Tags: 
+*/
+
+
+model Evacuation
+
+/* Insert your model definition here */
+
+// Model có thể bao gồm nhiều điểm safety, evacuation point khác nhau 
+global {
+	
+	int nb_of_people <- 1000;
+	
+	// phạm vi nhận thức của mỗi người là khác nhau --> định nghĩa các cái attribute của global sẽ giống như định nghĩa 1 const 
+	float min_perception_distance <- 50.0;
+	float max_perception_distance <- 500.0;
+	
+	geometry shape <- square(500#m);
+	float step <- 10#sec;
+	
+	init {
+		create hazard;
+		create evacuation_point {
+			location <- {0, 0};
+		}
+		
+		create inhabitant number: nb_of_people{
+			safety_point <- any(evacuation_point);
+		}
+	}
+}
+
+// define the catastrophe --> đinh nghĩa cái thảm họa
+species hazard{
+	
+	float speed <- 0.2#km/#h;
+	geometry shape <- circle(20#m);
+	
+	reflex expand{
+		shape <- shape + (speed * step);
+	}
+}
+
+// định nghĩa species evacuation_point --> định nghĩa điểm mà con người sẽ di tản tới khi phát hiện ra hazard(nguy cơ)
+species evacuation_point{
+	aspect default {
+		draw circle(10#m) color: #green;
+	}
+}
+
+// định nghĩa species inhabitant --> định nghía species người dân(species nghĩa là loài)
+species inhabitant {
+	evacuation_point safety_point;
+	float perception_dist <- rnd(min_perception_distance, max_perception_distance);
+	bool alerted <- false;
+	reflex perceive_hazard when: not alerted{
+		alerted <- not empty(hazard at_distance(perception_dist));
+	}
+	aspect default{
+		draw circle(1#m) color: #blue;
+	}
+}
+
+experiment my_experiment type: gui{
+	output {
+		display my_display type: 3d{
+			species hazard;
+			species evacuation_point;
+			species inhabitant;
+		}
+	}
+}

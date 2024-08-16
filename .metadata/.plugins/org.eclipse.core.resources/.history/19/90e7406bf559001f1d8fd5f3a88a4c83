@@ -1,0 +1,26 @@
+/**
+* Name: Evacuation
+* Based on the internal empty template. 
+* Author: SON GIANG
+* Tags: 
+*/
+
+
+model Evacuation
+
+/* Insert your model definition here */
+
+global {
+	geometry shape <- square(500#m);
+}
+
+// define the catastrophe --> đinh nghĩa cái thảm họa
+species hazard{
+	
+	float speed <- 0.2#km/#h;
+	geometry shape <- circle(20#m);
+}
+
+experiment Evacuation type: gui{
+	
+}

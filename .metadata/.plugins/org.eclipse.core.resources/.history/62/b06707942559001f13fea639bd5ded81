@@ -1,0 +1,29 @@
+/**
+* Name: mymodel
+* Based on the internal empty template. 
+* Author: SON GIANG
+* Tags: 
+*/
+
+
+model mymodel
+
+/* Insert your model definition here */
+
+global {
+	init {
+		create people number: 2000;
+	}
+}
+
+species people{
+	
+}
+
+experiment Schelling1 type: gui{
+	output{
+		display people_display {
+			species people;
+		}
+	}
+}
